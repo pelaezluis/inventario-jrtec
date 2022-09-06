@@ -44,7 +44,7 @@ async def get_product(product_id: str):
     raise HTTPException(status_code=404, detail="Product doesn't exists")
 
 
-@router.put('/product/{product_id}')
+@router.put('/product/{product_id}', response_model=PutResponse[ProductCreate])
 async def update_product(product_id: str, product: ProductCreate):
     index: int = 0
     for product_ in products:
