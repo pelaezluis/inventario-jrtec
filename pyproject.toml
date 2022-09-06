@@ -10,6 +10,9 @@ python = "^3.9"
 fastapi = "^0.75.0"
 uvicorn = "^0.18.3"
 
+[tool.poetry.scripts]
+fastapi = "app.main:app"
+
 
 [build-system]
 requires = ["poetry-core"]
