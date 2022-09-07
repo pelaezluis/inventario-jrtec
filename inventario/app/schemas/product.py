@@ -8,4 +8,4 @@ class ProductCreate(BaseModel):
     price: float
     quantity: int
     available: bool = True
-    created_at: datetime = datetime.now()
+    created_at: Optional[datetime]

@@ -2,18 +2,11 @@ from datetime import datetime
 from typing import List
 from fastapi import APIRouter, HTTPException
 from uuid import uuid4 as uuid
-from app.schemas.response import GetResponse, PostResponse
+from app.schemas.response import GetResponse, PostResponse, PutResponse, DeleteResponse
 from app.schemas.product import ProductCreate
-from app.schemas.response import DeleteResponse
-from app.schemas.response import PutResponse
+from app.db.db import products
 
 router = APIRouter()
-
-products: List[ProductCreate] = [
-    ProductCreate(id=str(uuid()), product="Jabón", price=3, quantity=10, availabel=True, created_at=datetime.now()),
-    ProductCreate(id=str(uuid()), product="Shampoo", price=10, quantity=5, availabel=True, created_at=datetime.now()),
-    ProductCreate(id=str(uuid()), product="Cepillo", price=2, quantity=34, availabel=True, created_at=datetime.now())
-]
 
 
 @router.get('/product', response_model=GetResponse[List[ProductCreate]])
@@ -30,7 +23,7 @@ async def add_product(product: ProductCreate):
         Add new product to the database
     """
     product.id: int = str(uuid())
-    product.created_at: datetime = datetime.now() # momentaneo
+    product.created_at: datetime = datetime.now()
     products.append(product.dict())
     
     return PostResponse[ProductCreate](data=products[-1])

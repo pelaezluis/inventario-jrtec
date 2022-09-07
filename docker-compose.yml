@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  inventario_server:
+    container_name: inventario_server
+    build: ./inventario
+    restart: always
+    ports:
+      - "8000:8080"
+    command: "sh -c 'uvicorn app.main:app --reload --workers 3 --host 0.0.0.0 --port 8080'"
+    expose:
+      - "8080"
+    volumes:
+      - ./inventario:/code
+    
