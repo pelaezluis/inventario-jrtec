@@ -4,11 +4,49 @@ services:
     container_name: inventario_server
     build: ./inventario
     restart: always
-    ports:
-      - "8000:8080"
+    # ports:
+    #   - "8000:8080"
     command: "sh -c 'uvicorn app.main:app --reload --workers 3 --host 0.0.0.0 --port 8080'"
     expose:
       - "8080"
+    env_file: ".env"
     volumes:
       - ./inventario:/code
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.inventario.entrypoints=web"
+      - "traefik.http.routers.inventario.rule=Host(`inventario.${LOCAL_1}`, `inventario.${LOCAL_2}`)"
+      - traefik.http.services.inventarioservice.loadbalancer.server.port=8080
+
+  # redis_server:
+  #   container_name: redis_server
+  #   image: "redis:alpine"
+  #   restart: always
+  #   expose:
+  #     - "6000"
+  #   env_file: .env
+
+
+  reverse_proxy:
+    image: traefik:latest
+    restart: always
+    container_name: reverse_proxy
+    command:
+      - --providers.docker=true
+    ports:
+      - "80:80"
+    depends_on:
+      - inventario_server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/traefik.yml:ro
+      - ./traefik/.htpasswd:/.htpasswd
+      - "${EB_LOG_BASE_DIR:-./traefik}/traefik-proxy:/logs"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.${LOCAL_1}`, `traefik.${LOCAL_2}`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.usersfile=/.htpasswd"
+
     

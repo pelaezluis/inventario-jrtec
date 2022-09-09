@@ -1,0 +1,15 @@
+api:
+  dashboard: true
+
+# Entrypoints
+entryPoints:
+  web:
+    address: :80
+    
+# Providers
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+
+
+

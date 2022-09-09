@@ -9,10 +9,9 @@ readme = "README.md"
 python = "^3.9"
 fastapi = "^0.75.0"
 uvicorn = "^0.18.3"
-
-[tool.poetry.scripts]
-fastapi = "app.main:app"
-
+numpy = "^1.23.2"
+python-multipart = "^0.0.5"
+pydub = "^0.25.1"
 
 [build-system]
 requires = ["poetry-core"]
